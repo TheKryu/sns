@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="static/pico.min.css">
   <link rel="stylesheet" href="static/custom.css">
   <link rel="icon" href="static/favicon.ico">
+  <meta http-equiv="refresh" content="300">
 </head> 
 <body>
   
