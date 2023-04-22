@@ -28,9 +28,6 @@
     <ul>
       <li><u onclick="location='./'" style="cursor:pointer;"><kbd>SenSData</kbd></u></li>
     </ul>
-     <ul> 
-      <li><a href="./oldview.php">oldview</a></li>
-    </ul> 
   </nav>
 
   <main class="container">
