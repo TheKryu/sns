@@ -20,7 +20,6 @@
   if ( empty($sid) )
   {
     err_msg('Wrong id!');
-
     exit;
   }
 
@@ -79,12 +78,41 @@
         else echo "1M</a>";
         ?>
         </li>
-        <li><button style="padding: 7px;" onclick="location='./'">back</button></li>
+        <li onclick="location='?id=<?php echo $sid; ?>&t=y'" style="cursor:pointer;">
+        <?php if ( $st == "y" ) echo "<u>1year</u></a>"; 
+        else echo "1Y</a>";
+        ?>
+        </li>
+        <li onclick="location='?id=<?php echo $sid; ?>&t=a'" style="cursor:pointer;">
+        <?php if ( $st == "a" ) echo "<u>All</u></a>"; 
+        else echo "All</a>";
+        ?>
+        </li>
+        <!-- 
+        <li>
+          <details role="list">
+            <summary aria-haspopup="listbox" role="button" class="secondary">
+              Period
+            </summary>
+            <ul role="listbox">
+              <li><a>Hour</a></li>
+              <li><a>Day</a></li>
+              <li><a>Week</a></li>
+              <li><a>Month</a></li>
+              <li><a>Year</a></li>
+              <li><a>All</a></li>
+            </ul>
+          </details>
+        </li>
+        -->
+        <li><button onclick="location='./'">back</button></li>
+
       </ul>
     </nav>
-  <!-- </main> -->
 
-  <div id="curve_chart" style="width: auto; height: 89vh;"></div>
+
+
+  <!-- </main> -->
 
   <?php
 
@@ -94,40 +122,45 @@
     if ( $st == "d" ) $sdate = date("Y-m-d H:i:s", strtotime("-1 day"));
     if ( $st == "w" ) $sdate = date("Y-m-d H:i:s", strtotime("-1 week"));
     if ( $st == "m" ) $sdate = date("Y-m-d H:i:s", strtotime("-1 month"));
+    if ( $st == "y" ) $sdate = date("Y-m-d H:i:s", strtotime("-1 year"));
+    if ( $st == "a" ) $sdate = "2000-01-01 00:00:00";
 
     //echo $st, " ", $sdate, " ", $edate;
     
     //$db->exec('drop table if exists temp_d;');
 
-    $db->exec('create temp table temp_d (sens_id integer, date datetime, name text, type text, unit text, note text, min real, max real, value real);');
+    $db->exec('create temp table if not exists temp_d (sens_id integer, date datetime, name text, type text, unit text, note text, min real, max real, value real);');
     $db->exec('insert into temp_d(sens_id, name, type, unit, note) select id, name, type, measure, note from sens where id='.$sid.';');
-    $db->exec('update temp_d set date = (select date from dates where date=(select max(date) from dates));');
-    $db->exec('update temp_d set value = (select value from data where sens_id = temp_d.sens_id and data.date_id = (select max(date_id) from data));');
-    $db->exec('update temp_d set min = (select min(value) from data data, dates dt where data.sens_id = temp_d.sens_id
-               and data.date_id = dt.id and dt.date between "' . $sdate . '" and "' . $edate . '");');
-    $db->exec('update temp_d set max = (select max(data.value) from data data, dates dt where data.date_id = dt.id
-                and data.sens_id = temp_d.sens_id and dt.date between "' . $sdate . '" and "' . $edate . '");');
+    $db->exec('update temp_d set date = (select max(date) from data);');
+    $db->exec('update temp_d set value = (select value from data where sens_id = temp_d.sens_id and data.date = temp_d.date);');
+    $db->exec('update temp_d set min = (select min(value) from data data where data.sens_id = temp_d.sens_id and data.date between "' . $sdate . '" and "' . $edate . '");');
+    $db->exec('update temp_d set max = (select max(data.value) from data data where data.sens_id = temp_d.sens_id and data.date between "' . $sdate . '" and "' . $edate . '");');
 
     $sens_dt = $db->querySingle('select * from temp_d;', true);
 
-    if ( $st == "h" || $st == "d")
+    if ( $st == "h" || $st == "d" )    // hour, day
     {
-      $sql = 'select dt.date, d.value from data d left join dates dt on dt.id = d.date_id left join sens s on s.id = d.sens_id 
-                where d.sens_id=' . $sid . ' and dt.date between "' . $sdate . '" and "' . $edate . '";';
+      $sql = 'select d.date, d.value from data d 
+                where d.sens_id=' . $sid . ' and d.date between "' . $sdate . '" and "' . $edate . '";';
     }
-    else
+    elseif ( $st == "w" )            // week
     {
-      $sql='select dt.date, d.value from data d 
-          left join dates dt on dt.id = d.date_id 
-          left join sens s on s.id = d.sens_id 
-          where d.sens_id=' . $sid . ' and dt.date between "' . $sdate . '" and "' . $edate . '" 
-          and strftime("%M", dt.date) % 60 = 0;';
+      $sql = 'select d.date, d.value from data d 
+              where d.sens_id=' . $sid . ' and strftime("%M", date) == "00";';
     }
+    else                            // year/all
+    {
+      $sql = 'select d.date, avg(d.value) as value from data d where d.sens_id=' . $sid . ' and date(d.date)=date("' . $edate . '") union all
+      select a.date, a.value from data_all a where a.sens_id=' . $sid . ' and a.date between "' . $sdate . '" and "' . $edate . ';" order by 1';
+    } 
+
+    //echo $sql;
 
     $result = $db->query($sql);
 
   ?>
 
+  <div id="curve_chart" style="width: auto; height: 89vh;"></div>
 
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 

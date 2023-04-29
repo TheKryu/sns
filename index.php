@@ -41,12 +41,11 @@
 
   $result = $db->exec("create temp table if not exists temp_s 
                         (id integer, name text, type text, measure text, note text, cur_val real, 
-                        prev_val real, date datetime, date_id integer);");
+                        prev_val real, date datetime);");
   $result = $db->exec("insert into temp_s(id, name, type, measure, note) select id, name, type, measure, note from sens;");
-  $result = $db->exec("update temp_s set date_id = (select id from dates where date=(select max(date) from dates));");
-  $result = $db->exec("update temp_s set date = (select date from dates where date=(select max(date) from dates));");
-  $result = $db->exec("update temp_s set cur_val = (select value from data where data.sens_id=temp_s.id and data.date_id=temp_s.date_id);");
-  $result = $db->exec("update temp_s set prev_val = (select value from data where data.sens_id=temp_s.id and data.date_id=temp_s.date_id-1);");
+  $result = $db->exec("update temp_s set date = (select max(date) from data);");
+  $result = $db->exec("update temp_s set cur_val = (select value from data where data.sens_id=temp_s.id and data.date=temp_s.date);");
+  $result = $db->exec("update temp_s set prev_val = (select value from data where data.sens_id=temp_s.id and datetime(data.date)=datetime(temp_s.date, '-5 minutes'));");
   
   $result = $db->query("select id, name, type, measure, note, cur_val, prev_val, date from temp.temp_s order by id;");
   

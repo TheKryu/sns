@@ -65,11 +65,10 @@
 
 <?php
 
-  $result = $db->query('select dt.date, s.name, s.type, d.value, s.measure from data d 
-                        left join dates dt on dt.id = d.date_id 
+  $result = $db->query('select d.date, s.name, s.type, d.value, s.measure from data d 
                         left join sens s on s.id = d.sens_id 
-                        where d.sens_id=' . $sid . ' and date(dt.date) like "' . $today . '" order by dt.date desc;'
-                      );
+                        where d.sens_id=' . $sid . ' and 
+                        date(d.date)="' . $today . '" order by d.date desc;');
 
   $i = 1;
 
