@@ -24,7 +24,6 @@
   }
 
   //$today = date("Y-m-d");
-
   //echo $sid;
 
   $s1 = $db->querySingle("select s.name, s.type, s.measure from sens s where s.id=" . $sid, true);
@@ -110,8 +109,6 @@
       </ul>
     </nav>
 
-
-
   <!-- </main> -->
 
   <?php
@@ -143,18 +140,19 @@
       $sql = 'select d.date, d.value from data d 
                 where d.sens_id=' . $sid . ' and d.date between "' . $sdate . '" and "' . $edate . '";';
     }
-    elseif ( $st == "w" )            // week
+    elseif ( $st == "w" )            // week - hourly values
     {
       $sql = 'select d.date, d.value from data d 
-              where d.sens_id=' . $sid . ' and strftime("%M", date) == "00";';
+              where d.sens_id=' . $sid . ' and strftime("%M", date) == "30";';
     }
-    else                            // year/all
+    else                            // month/year/all dayly average values
     {
-      $sql = 'select d.date, avg(d.value) as value from data d where d.sens_id=' . $sid . ' and date(d.date)=date("' . $edate . '") union all
+      $sql = 'select d.date, avg(d.value) as value from data d where d.sens_id=' . $sid . 
+      ' and strftime("%M", date)=="30" group by date(d.date), d.sens_id union all
       select a.date, a.value from data_all a where a.sens_id=' . $sid . ' and a.date between "' . $sdate . '" and "' . $edate . ';" order by 1';
     } 
 
-    //echo $sql;
+//    echo $sql;
 
     $result = $db->query($sql);
 
