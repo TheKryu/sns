@@ -108,7 +108,7 @@
   </main>
     <footer>
       <main class="container" style="text-align: center;">
-        <small>v1.05 01.11.2022 <a href="mailto:i@kruee.xyz">i@kruee.xyz</a></small>
+        <small>v1.05 01.11.2022 <a href="mailto:i@kruee.su">i@kruee.su</a></small>
       </main>
     </footer>
   </body>
