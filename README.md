@@ -1,2 +1,2 @@
 # sns
-View data from weather sensors
+View data from local weather sensors
