@@ -42,8 +42,8 @@
   $result = $db->exec("create temp table if not exists temp_s 
                         (id integer, name text, type text, measure text, note text, cur_val real, 
                         prev_val real, date datetime);");
-  $result = $db->exec("insert into temp_s(id, name, type, measure, note) select id, name, type, measure, note from sens;");
-  $result = $db->exec("update temp_s set date = (select max(date) from data);");
+  $result = $db->exec("insert into temp_s(id, name, type, measure, note) select id, name, type, measure, note from sens where status=1;");
+  $result = $db->exec("update temp_s set date = (select max(date) from data where sens_id = temp_s.id);");
   $result = $db->exec("update temp_s set cur_val = (select value from data where data.sens_id=temp_s.id and data.date=temp_s.date);");
   $result = $db->exec("update temp_s set prev_val = (select value from data where data.sens_id=temp_s.id and datetime(data.date)=datetime(temp_s.date, '-5 minutes'));");
   
