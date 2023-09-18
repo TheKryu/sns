@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="static/custom.css">
   <link rel="icon" href="static/favicon.ico">
   <meta http-equiv="refresh" content="300">
-  </head> 
+  </head>
 <body>
 
 <?php
@@ -142,13 +142,12 @@
     }
     elseif ( $st == "w" )            // week - hourly values
     {
-      $sql = 'select d.date, d.value from data d 
-              where d.sens_id=' . $sid . ' and strftime("%M", date) == "30";';
+      $sql = 'select d.date, avg(d.value) as value from data d where d.sens_id=' . $sid . ' group by strftime("%Y-%m-%d %H", date);';
     }
     else                            // month/year/all dayly average values
     {
-      $sql = 'select d.date, avg(d.value) as value from data d where d.sens_id=' . $sid . 
-      ' and strftime("%M", date)=="30" group by date(d.date), d.sens_id union all
+      $sql = 'select d.date, avg(d.value) as value from data d where d.sens_id=' . $sid . ' group by strftime("%Y-%m-%d", d.date)
+       union all
       select a.date, a.value from data_all a where a.sens_id=' . $sid . ' and a.date between "' . $sdate . '" and "' . $edate . ';" order by 1';
     } 
 
