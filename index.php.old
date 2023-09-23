@@ -4,33 +4,40 @@
   <title>mSensorsData</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="static/spectre.min.css">
-  <link rel="stylesheet" href="static/spectre-icons.min.css">
+  <link rel="stylesheet" href="static/pico.min.css">
+  <link rel="stylesheet" href="static/custom.css">
   <link rel="icon" href="static/favicon.ico">
   <meta http-equiv="refresh" content="300">
   <!-- <link rel="icon" href="data:,"> -->
 
   <style>
-    .card {
-      background: #efefef;
-    }
 
+    .container {
+      /*max-width: 1000px; */
+      --block-spacing-vertical: calc(var(--spacing) * 1);
+      }
+    
+    body {--block-spacing-vertical: calc(var(--spacing) * 1);}
   </style>
 
 </head> 
 
 <body>
 
-  <div class="container grid-lg">
+  <nav class="container-fluid">
+    <ul>
+      <li><u onclick="location='./'" style="cursor:pointer;"><kbd>SenSData</kbd></u></li>
+    </ul>
+  </nav>
 
-    <header class="navbar">
-      <section class="navbar-section">
-        <a href="./" class="navbar-brand mr-2">SensData</a>
-      </section>
-    </header>
+  <main class="container">
 <?php
   require("config.php");
   require("err_msg.php");
+
+  $up_arrow = "&#8599;";
+  $dn_arrow = "&#8601;";
+  $nc_arrow = "&#8596;";
 
   $result = $db->exec("create temp table if not exists temp_s 
                         (id integer, name text, type text, measure text, note text, cur_val real, 
@@ -56,44 +63,34 @@
 
     if ( $col === 1 )
     {
-      echo '<div class="columns m-2">';
-      echo "\r\n";
+      echo "<div class='grid'>\n";
     }
 
     $id = $res["id"];
 
-    echo "\t";
-    echo '<div class="column col-4 col-xs-auto col-mx-auto">';
-    echo "\r\n\t";
-    echo '<div class="card">';
-    echo '<div class="card-header"><div class="card-title">';
-    echo "\r\n";
+    // echo "<div><article style='padding: 15px; cursor: pointer' onclick=\"location='./lastgraph.php?id=" . $id . "'\">";
+    echo "<div><article style='padding: 15px;'>";
+    echo "<div class='headings'><h1><a href='./lastgraph.php?id=" .$id . "' data-tooltip='". $res["date"]."'>" . $res["cur_val"] . " " . $res["measure"] . "</a>&nbsp;&nbsp;";
 
     $cv = $res["cur_val"];
     $pv = $res["prev_val"];
 
     // var_dump($cv, $pv);
 
-    echo "\t<a href='./lastdata.php?id=".$id."'>";
-    echo '<i class="icon ';
+    echo "<a href='./lastdata.php?id=".$id."'>";
     
     if ( $cv > $pv ) {
-      echo 'icon-upward"></i>';
+      echo $up_arrow;
     } elseif ( $cv == $pv ) {
-      echo 'icon-resize-horiz"></i>';
+      echo $nc_arrow;
     } else {
-      echo 'icon-downward"></i>';
+      echo $dn_arrow;
     }
-    echo "</a></div></div>\r\n";
-    echo '<div class="card-body h2">';
 
-    echo "\t<a href='./lastgraph.php?id=" .$id . "'><b class='tooltip' data-tooltip='".$res["date"]. "'>" . $res["cur_val"] . "</b> " . $res["measure"] . "</a>\r\n";
-    echo "</div>";
-    echo '<div class="card-footer">';
-
-    echo $res["name"] . "<br>";
-    echo $res["note"] . " " . $res["type"];
-    echo "</div></div></div>\n";
+    echo "</a></h1>";
+    echo "<h6>" . $res["name"] . "</h6>";
+    echo "<p>" . $res["note"] . " " . $res["type"] . "</p>";
+    echo "</div></article></div>\n";
 
     $col++;
 
@@ -104,19 +101,15 @@
     }
 
   }
-
+  
   $db->close();
   
 ?>
-<!--
   </main>
     <footer>
       <main class="container" style="text-align: center;">
         <small>v1.05 01.11.2022 <a href="mailto:i@kruee.su">i@kruee.su</a></small>
       </main>
     </footer>
-  -->
-</div>
-</div>
   </body>
 </html>
