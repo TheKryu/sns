@@ -10,24 +10,22 @@
   <meta http-equiv="refresh" content="300">
   <!-- <link rel="icon" href="data:,"> -->
 
-  <style>
-    .card {
-      background: #efefef;
-    }
-
-  </style>
-
 </head> 
 
 <body>
 
-  <div class="container grid-lg">
+  <div class="container grid-md">
 
     <header class="navbar">
       <section class="navbar-section">
         <a href="./" class="navbar-brand mr-2">SensData</a>
       </section>
+      <section class="navbar-section">
+        <a href="#" class="btn btn-link">data</a>
+        <a href="#" class="btn btn-link">log</a>
+      </section>
     </header>
+    <br>
 <?php
   require("config.php");
   require("err_msg.php");
@@ -62,20 +60,27 @@
 
     $id = $res["id"];
 
-    echo "\t";
-    echo '<div class="column col-4 col-xs-auto col-mx-auto">';
-    echo "\r\n\t";
-    echo '<div class="card">';
-    echo '<div class="card-header"><div class="card-title">';
-    echo "\r\n";
+    echo '<div class="column">';
+    //echo "\r\t";
+    echo '<div class="panel">';
+    echo '<div class="panel-header"><div class="panel-title">';
+    echo "<b class='tooltip' data-tooltip='" . $res["date"] . "''>" . $res["name"] . 
+    "</b></div></div>";
+    //echo "\r\n";
+    echo '<div class="panel-body">';
+    echo "\t\r\n<a class='h1' href='./lastgraph.php?id=" .$id . "'>" . $res["cur_val"] . "</span></a>&nbsp;";
+    echo $res["measure"] . "</div>\r\n";
 
+    echo '<div class="panel-footer">';
+    echo $res["note"] . " " . $res["type"];
+    
     $cv = $res["cur_val"];
     $pv = $res["prev_val"];
 
     // var_dump($cv, $pv);
 
-    echo "\t<a href='./lastdata.php?id=".$id."'>";
-    echo '<i class="icon ';
+    echo "<a href='./lastdata.php?id=".$id."'>";
+    echo '&nbsp;<i class="icon ';
     
     if ( $cv > $pv ) {
       echo 'icon-upward"></i>';
@@ -84,16 +89,7 @@
     } else {
       echo 'icon-downward"></i>';
     }
-    echo "</a></div></div>\r\n";
-    echo '<div class="card-body h2">';
-
-    echo "\t<a href='./lastgraph.php?id=" .$id . "'><b class='tooltip' data-tooltip='".$res["date"]. "'>" . $res["cur_val"] . "</b> " . $res["measure"] . "</a>\r\n";
-    echo "</div>";
-    echo '<div class="card-footer">';
-
-    echo $res["name"] . "<br>";
-    echo $res["note"] . " " . $res["type"];
-    echo "</div></div></div>\n";
+    echo "</a></div></div></div>\r\n";
 
     $col++;
 
