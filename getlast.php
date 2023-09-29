@@ -2,7 +2,7 @@
 
   $db = new SQLite3("/db/msensors.db") or die("Error connect to db!");
 
-  $result = $db->query("select d.sens_id, d.value, d.date from data d where d.date=(select max(s.date) from data s where d.sens_id = s.sens_id);");
+  $result = $db->query("select d.sens_id, d.value, d.date from data d where d.date=(select max(s.date) from data s where d.sens_id = s.sens_id) order by d.sens_id;");
 
   echo "###;";
 
@@ -14,4 +14,6 @@
   }
 
 //  echo $r;
+
+  $db->close();
 ?>

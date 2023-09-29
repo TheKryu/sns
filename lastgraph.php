@@ -54,35 +54,35 @@
     <section class="navbar-senter">
       <a href="?id=<?php echo $sid; ?>&t=h" class="btn btn-link">
         <?php if ($st == "h"): ?>
-          1hour
+          hour
         <?php else: ?>
           1H
         <?php endif ?>
       </a>
       <a href="?id=<?php echo $sid; ?>&t=d" class="btn btn-link">
         <?php if ($st == "d"): ?>
-          1day
+          day
         <?php else: ?>
           1d
         <?php endif ?>
       </a>
       <a href="?id=<?php echo $sid; ?>&t=w" class="btn btn-link">
       <?php if ($st == "w"): ?>
-          1week
+          week
         <?php else: ?>
           1w
         <?php endif ?>
       </a>
       <a href="?id=<?php echo $sid; ?>&t=m" class="btn btn-link">
       <?php if ($st == "m"): ?>
-          1month
+          month
         <?php else: ?>
           1m
         <?php endif ?>
       </a>
       <a href="?id=<?php echo $sid; ?>&t=y" class="btn btn-link">
       <?php if ($st == "y"): ?>
-          1year
+          year
         <?php else: ?>
           1y
         <?php endif ?>
@@ -186,5 +186,6 @@
       chart.draw(data, options);
     }
   </script>
+  </div>
   </body>
 </html>

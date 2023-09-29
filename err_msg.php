@@ -2,8 +2,9 @@
 
 function err_msg($msg="error")
 {
-  $s = "<main class='container'><article><header>ERROR</header>$msg</article>
-      <button onclick='history.back();'>back</button></main></body></html>";
+  $s = "<div class='toast toast-error'>
+  <button class='btn btn-clear float-right'></button>
+  $msg </div>";
 
   echo $s;
 }
